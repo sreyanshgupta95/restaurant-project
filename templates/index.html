@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Hotel</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        input, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { background: #e91e63; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #d81b60; }
+        .qr-box { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 5px; border: 1px dashed #ccc; }
+        .qr-box img { width: 130px; height: 130px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Welcome to Hotel</h2>
+        <form action="/menu" method="POST">
+            <p>Location/Room: <b>{{ room }}</b></p>
+            <input type="hidden" name="room" value="{{ room }}">
+            <input type="text" name="name" placeholder="Apna Naam (Your Name)" required>
+            <input type="number" name="people" placeholder="Kitne log hain? (Total People)" required>
+            <button type="submit">Menu Dekhein (View Menu)</button>
+        </form>
+
+        <div class="qr-box">
+            <p style="font-size: 12px; margin: 0 0 5px 0; color: #666;">Scan to open on phone:</p>
+            <img src="{{ url_for('static', filename='qr_code.png') }}" alt="Table QR Code">
+        </div>
+    </div>
+</body>
+</html>
