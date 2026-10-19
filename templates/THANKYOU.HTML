@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Thank You!</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .thankyou-card { background: #ffffff; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); text-align: center; max-width: 480px; width: 100%; }
+        .success-icon { width: 65px; height: 65px; background-color: #28a745; color: white; font-size: 34px; display: flex; justify-content: center; align-items: center; border-radius: 50%; margin: 0 auto 15px auto; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); }
+        h1 { color: #2c3e50; font-size: 24px; margin-bottom: 5px; }
+        p { color: #666; font-size: 14px; margin: 5px 0 15px 0; }
+        .order-summary { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; border-left: 4px solid #28a745; }
+        .order-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        .order-table th, .order-table td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .order-table th { color: #444; background-color: #edf2f7; }
+        .highlight { color: #2c3e50; font-weight: 600; }
+        .home-btn { display: inline-block; padding: 10px 24px; background-color: #28a745; color: white; text-decoration: none; border-radius: 25px; font-weight: 600; font-size: 14px; transition: background 0.3s ease, transform 0.2s ease; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
+        .home-btn:hover { background-color: #218838; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="thankyou-card">
+        <div class="success-icon">✓</div>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you! Your order has been successfully submitted to the kitchen.</p>
+        <p>Location / Table: <span class="highlight">{{ room }}</span></p>
+        
+        <div class="order-summary">
+            <p style="margin-bottom: 5px;">💰 <strong>Final Total Bill:</strong> <span class="highlight" style="color: #28a745; font-size: 16px;">₹{{ orders | sum(attribute='total_price') }}</span></p>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 10px 0;">
+            <p style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">📋 Ordered Items Summary</p>
+            <table class="order-table">
+                <thead>
+                    <tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+                </thead>
+                <tbody>
+                    {% for ord in orders %}
+                    <tr>
+                        <td>{{ ord.item }}</td>
+                        <td>{{ ord.quantity }}</td>
+                        <td>₹{{ ord.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/menu" class="home-btn">Place Another Order</a>
+    </div>
+</body>
+</html>

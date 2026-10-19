@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Placed Successfully</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .success-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #28a745;
+            color: white;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        p {
+            color: #666;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        .order-details {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+            border-left: 4px solid #28a745;
+        }
+        .order-details p {
+            margin: 5px 0;
+            color: #444;
+        }
+        .highlight {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        /* Star Rating CSS */
+        .rating-section {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            text-align: center;
+        }
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .stars input {
+            display: none;
+        }
+        .stars label {
+            font-size: 28px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: #ffc107;
+        }
+        .feedback-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 14px;
+            resize: none;
+            box-sizing: border-box;
+        }
+        .submit-feedback {
+            margin-top: 12px;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-feedback:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h1>Order Placed!</h1>
+        <p>Your delicious food is being prepared.</p>
+        
+        <div class="order-details">
+            <p>🍽️ <strong>Item:</strong> <span class="highlight">{{ item }}</span></p>
+            <p>🔢 <strong>Quantity:</strong> <span class="highlight">{{ quantity }}</span></p>
+            <p>💰 <strong>Total Price:</strong> <span class="highlight">₹{{ total_price }}</span></p>
+            <p>📍 <strong>Table / Room:</strong> <span class="highlight">{{ room }}</span></p>
+        </div>
+
+        <!-- Star Rating Form -->
+        <form action="/feedback" method="POST" class="rating-section">
+            <p style="font-weight: 600; color: #333; margin-bottom: 5px;">Rate your experience:</p>
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+            <textarea name="comment" class="feedback-input" rows="2" placeholder="Write a quick review (optional)..."></textarea>
+            <button type="submit" class="submit-feedback">Submit Feedback</button>
+        </form>
+
+        <a href="/menu" class="back-link">← Order More Items</a>
+    </div>
+</body>
+</html>

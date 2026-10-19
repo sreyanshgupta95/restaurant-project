@@ -1,62 +1,69 @@
-from flask import Flask, render_template, request, session, redirect, url_for
-import os
-import qrcode
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = 'restaurant_secret_key'
+app.secret_key = 'your_secret_key_here'
 
-# Menu Items with IDs and Categories
 MENU_ITEMS = {
-    'starters': [
-        {'id': 1, 'name': 'Soup', 'price': 100},
-        {'id': 2, 'name': 'Paneer Tikka', 'price': 200}
-    ],
-    'dinner': [
-        {'id': 3, 'name': 'Dal Makhani', 'price': 250},
-        {'id': 4, 'name': 'Butter Naan', 'price': 40}
-    ],
-    'beverages': [
-        {'id': 5, 'name': 'Cold Drink', 'price': 60},
-        {'id': 6, 'name': 'Juice', 'price': 90}
-    ],
-    'dessert': [
-        {'id': 7, 'name': 'Ice Cream', 'price': 120},
-        {'id': 8, 'name': 'Gulab Jamun', 'price': 80}
-    ]
+    'Pizza': 300,
+    'French Fries': 100,
+    'Gulab Jamun': 80,
+    'Burger': 150,
+    'Cold Drink': 60
 }
 
 @app.route('/')
-def home():
-    room = request.args.get('room', 'Table-1')
-    session['room'] = room
-    
-    # Generate QR code for the table
-    if not os.path.exists('static'):
-        os.makedirs('static')
-    current_url = f"http://10.2.0.2:5000/?room={room}"
-    qr = qrcode.make(current_url)
-    qr_path = os.path.join('static', 'qr_code.png')
-    qr.save(qr_path)
-    
-    return render_template('index.html', room=room, qr_code='static/qr_code.png')
+def index():
+    return render_template('index.html')
 
 @app.route('/menu', methods=['GET', 'POST'])
 def menu():
     if request.method == 'POST':
-        session['name'] = request.form.get('name')
-        session['people'] = request.form.get('people')
-        if request.form.get('room'):
-            session['room'] = request.form.get('room')
-            
+        room = request.form.get('room')
+        if room:
+            session['room'] = room
+            session['orders'] = []
+        return redirect(url_for('menu'))
+    
     room = session.get('room', 'Table-1')
-    return render_template('menu.html', room=room, menu=MENU_ITEMS)
+    return render_template('menu.html', menu=MENU_ITEMS, room=room)
 
-@app.route('/place_order', methods=['POST'])
-def place_order():
-    selected_items = request.form.getlist('items')
+@app.route('/add_order', methods=['POST'])
+def add_order():
+    item = request.form.get('item')
+    try:
+        quantity = int(request.form.get('quantity', 1))
+    except ValueError:
+        quantity = 1
+
+    if item in MENU_ITEMS:
+        price_per_item = MENU_ITEMS[item]
+        total_price = price_per_item * quantity
+
+        if 'orders' not in session:
+            session['orders'] = []
+
+        session['orders'].append({
+            'item': item,
+            'quantity': quantity,
+            'total_price': total_price
+        })
+        session.modified = True
+
     room = session.get('room', 'Table-1')
-    name = session.get('name', 'Guest')
-    return render_template('success.html', name=name, room=room, items=selected_items)
+    orders = session.get('orders', [])
+
+    return render_template('success.html', 
+                           item=item, 
+                           quantity=quantity, 
+                           total_price=total_price, 
+                           room=room, 
+                           orders=orders)
+
+@app.route('/order-complete', methods=['POST', 'GET'])
+def order_complete():
+    orders = session.get('orders', [])
+    room = session.get('room', 'Table-1')
+    return render_template('thankyou.html', orders=orders, room=room)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)

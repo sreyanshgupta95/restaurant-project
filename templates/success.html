@@ -3,54 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Success</title>
+    <title>Final Order Summary</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ff9966, #ff5e62);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        h2 {
-            color: #27ae60;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #555;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .room-badge {
-            background: #f39c12;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .success-card { background: #ffffff; padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); text-align: center; max-width: 480px; width: 100%; }
+        .success-icon { width: 45px; height: 45px; background-color: #28a745; color: white; font-size: 24px; display: flex; justify-content: center; align-items: center; border-radius: 50%; margin: 0 auto 8px auto; }
+        h1 { color: #2c3e50; font-size: 20px; margin-bottom: 5px; }
+        p { color: #666; font-size: 13px; margin: 4px 0; }
+        .order-details { background: #f8f9fa; padding: 10px; border-radius: 10px; margin: 10px 0; text-align: left; border-left: 4px solid #28a745; max-height: 180px; overflow-y: auto; }
+        .order-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 5px; }
+        .order-table th, .order-table td { padding: 5px; text-align: left; border-bottom: 1px solid #ddd; }
+        .order-table th { color: #444; background-color: #e9ecef; }
+        .highlight { color: #2c3e50; font-weight: 600; }
+        .rating-section { margin-top: 8px; padding: 8px; background: #fff; border-radius: 8px; border: 1px solid #eee; text-align: left; }
+        .rating-section p { font-weight: 600; color: #333; margin-bottom: 4px; font-size: 12px; }
+        .stars { display: flex; justify-content: center; gap: 5px; font-size: 20px; cursor: pointer; flex-direction: row-reverse; margin-bottom: 8px; }
+        .stars input { display: none; }
+        .stars label { color: #ccc; transition: color 0.2s; }
+        .stars label:hover, .stars label:hover ~ label, .stars input:checked ~ label { color: #f39c12; }
+        .feedback-input { width: 100%; height: 45px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 12px; resize: none; box-sizing: border-box; }
+        .btn-container { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+        .action-btn { padding: 8px 14px; border-radius: 20px; font-weight: 600; font-size: 12px; text-decoration: none; transition: background 0.3s ease; }
+        .btn-more { background-color: #6c757d; color: white; display: inline-block; }
+        .btn-more:hover { background-color: #5a6268; }
+        .btn-submit { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        .btn-submit:hover { background-color: #218838; }
     </style>
 </head>
 <body>
+    <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h1>Order Placed Successfully!</h1>
+        <p>Location / Table: <span class="highlight">{{ room }}</span></p>
+        
+        <div class="order-details">
+            <p>💰 <strong>Total Bill Amount:</strong> <span class="highlight" style="color: #28a745;">₹{{ orders | sum(attribute='total_price') }}</span></p>
+            <hr style="border: 0; border-top: 1px solid #ddd; margin: 6px 0;">
+            <p style="font-weight: bold; color: #2c3e50;">📋 Cart Items</p>
+            <table class="order-table">
+                <thead>
+                    <tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+                </thead>
+                <tbody>
+                    {% for ord in orders %}
+                    <tr>
+                        <td>{{ ord.item }}</td>
+                        <td>{{ ord.quantity }}</td>
+                        <td>₹{{ ord.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <div class="card">
-        <div class="room-badge">Location: {{ room_no }}</div>
-        <h2>Order Placed Successfully!</h2>
-        <p>Your order has been successfully sent to the kitchen staff.</p>
-        <p>Delicious food will be served at your table in approximately <strong>15-20 minutes</strong>.</p>
+        <div class="rating-section">
+            <p>Rate your experience:</p>
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+            <textarea class="feedback-input" name="feedback" placeholder="Write your feedback here..."></textarea>
+        </div>
+
+        <form action="/order-complete" method="POST">
+            <div class="btn-container">
+                <a href="/menu" class="action-btn btn-more">+ Add More Items</a>
+                <button type="submit" class="action-btn btn-submit">Submit Order ✓</button>
+            </div>
+        </form>
     </div>
-
 </body>
 </html>
